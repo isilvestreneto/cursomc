@@ -1,5 +1,6 @@
 package dev.silvestre.cursomc.resources;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,17 +12,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import dev.silvestre.cursomc.domain.Categoria;
 import dev.silvestre.cursomc.domain.Cliente;
-import dev.silvestre.cursomc.dto.CategoriaDTO;
 import dev.silvestre.cursomc.dto.ClienteDTO;
+import dev.silvestre.cursomc.dto.ClienteNewDTO;
 import dev.silvestre.cursomc.services.ClienteService;
 
 @RestController
@@ -73,6 +75,18 @@ public class ClienteResource {
 		Page<Cliente> list = service.findPage(page, linesPerPage, orderBy, direction);
 		Page<ClienteDTO> listDto = list.map(obj -> new ClienteDTO(obj));
 		return ResponseEntity.ok().body(listDto);
+
+	}
+
+	@PostMapping
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO clienteNewDto) {
+		Cliente cliente = service.fromDTO(clienteNewDto);
+		cliente = service.insert(cliente);
+
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(cliente.getId())
+				.toUri();
+
+		return ResponseEntity.created(uri).build();
 
 	}
 }
