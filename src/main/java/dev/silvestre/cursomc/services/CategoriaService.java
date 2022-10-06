@@ -3,6 +3,7 @@ package dev.silvestre.cursomc.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,8 @@ import dev.silvestre.cursomc.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class CategoriaService {
+
+	ModelMapper mapper = new ModelMapper();
 
 	@Autowired
 	private CategoriaRepository repo;
@@ -60,8 +63,9 @@ public class CategoriaService {
 		return repo.findAll(pageRequest);
 	}
 
-	public Categoria fromDTO(CategoriaDTO categoria) {
-		return new Categoria(categoria.getId(), categoria.getNome());
+	public Categoria fromDTO(CategoriaDTO categoriaDto) {
+
+		return mapper.map(categoriaDto, Categoria.class);
 	}
 
 }
