@@ -31,19 +31,19 @@ public class CategoriaResource {
 	@Autowired
 	private CategoriaService service;
 
-	@GetMapping(value = "/{id}")
-	public ResponseEntity<Categoria> find(@PathVariable Integer id) {
-
-		Categoria obj = service.find(id);
-		return ResponseEntity.ok().body(obj);
-	}
-
 	@GetMapping
 	public ResponseEntity<List<CategoriaDTO>> findAll() {
 
 		List<Categoria> list = service.findAll();
 		List<CategoriaDTO> listDto = list.stream().map(obj -> new CategoriaDTO(obj)).collect(Collectors.toList());
 		return ResponseEntity.ok().body(listDto);
+	}
+
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<Categoria> find(@PathVariable Integer id) {
+
+		Categoria obj = service.find(id);
+		return ResponseEntity.ok().body(obj);
 	}
 
 	@PostMapping
